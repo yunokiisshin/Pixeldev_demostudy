@@ -16,10 +16,14 @@ class Level:
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
         
+        #attack sprites
+        self.current_attack = None
+        
         self.create_map()
 
     def create_map(self):
         
+        # imports csv map data and pair it with key names
         layouts = {
             'boundary': import_csv_layout('levelgraphics/map/map_FloorBlocks.csv'),
             'grass': import_csv_layout('levelgraphics/map/map_Grass.csv'),
@@ -54,10 +58,17 @@ class Level:
         #         if col == 'p':
         #             self.player = Player((x,y),[self.visible_sprites],self.obstacle_sprites)
 
-        self.player = Player((1000,1500),[self.visible_sprites],self.obstacle_sprites,self.create_attack)
-        
+        # initialize player element
+        self.player = Player((1000,1500),[self.visible_sprites],self.obstacle_sprites,self.create_attack, self.destroy_attack)
+            
     def create_attack(self):
-        Weapon(self.player,[self.visible_sprites])
+        self.current_attack = Weapon(self.player,[self.visible_sprites])
+        
+    #for post-attack animation
+    def destroy_attack(self):
+        if self.current_attack:
+            self.current_attack.kill()
+            self.current_attack = None
         
     def run(self):
         #deal with drawing and updating the game
