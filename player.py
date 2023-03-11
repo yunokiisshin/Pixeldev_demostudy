@@ -3,26 +3,34 @@ from settings import *
 from support import import_folder
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self,pos,groups,obstacle_sprites):
+    
+    def __init__(self,pos,groups,obstacle_sprites,create_attack):
         super().__init__(groups)
-        self.image = pygame.image.load('image_samples/idle_down.png').convert_alpha()
+        
+        # initialize player shape
+        self.image = pygame.image.load('./levelgraphics/graphics/player/down_idle/idle_down.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0, -16)
         
-        #graphics setup
+        # graphics setup
         self.import_player_assets()
         self.status = 'down'
         self.frame_index = 0
         self.animation_speed = 0.15
         
-        #movements
+        # movements and attacks
         self.direction = pygame.math.Vector2()
         self.speed = 5
         self.attacking = False
         self.attack_cooldown = 400
         self.attack_time = None
-        
         self.obstacle_sprites= obstacle_sprites
+        
+        # weapons
+        self.create_attack = create_attack
+        self.weapon_index = 0
+        self.weapon = list(weapon_data.keys())[self.weapon_index]
+        
         
     def import_player_assets(self):
         character_path = './levelgraphics/graphics/player/'
@@ -94,10 +102,12 @@ class Player(pygame.sprite.Sprite):
             if keys[pygame.K_SPACE] and not self.attacking:
                 self.attacking = True
                 self.attack_time = pygame.time.get_ticks()
+                self.create_attack()
 
             if keys[pygame.K_LSHIFT] and not self.attacking:
                 self.attacking = True
                 self.attack_time = pygame.time.get_ticks()
+                self.create_attack()
 
 
     def cooldowns(self):

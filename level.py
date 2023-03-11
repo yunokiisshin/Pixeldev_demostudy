@@ -4,6 +4,7 @@ from tile import Tile
 from player import Player
 from support import *
 from random import choice
+from weapon import Weapon
 
 class Level:
     def __init__(self):
@@ -53,7 +54,10 @@ class Level:
         #         if col == 'p':
         #             self.player = Player((x,y),[self.visible_sprites],self.obstacle_sprites)
 
-        self.player = Player((2000,1500),[self.visible_sprites],self.obstacle_sprites)
+        self.player = Player((1000,1500),[self.visible_sprites],self.obstacle_sprites,self.create_attack)
+        
+    def create_attack(self):
+        Weapon(self.player,[self.visible_sprites])
         
     def run(self):
         #deal with drawing and updating the game
@@ -73,8 +77,7 @@ class YSortCameraGroup(pygame.sprite.Group):
         
         self.floor_surf = pygame.image.load('levelgraphics/graphics/tilemap/ground.png').convert()
         self.floor_rect = self.floor_surf.get_rect(topleft = (0,0))
-        
-        
+              
     def custom_draw(self,player):
         
         self.offset.x = player.rect.centerx - self.half_width
