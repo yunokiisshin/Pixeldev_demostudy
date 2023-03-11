@@ -10,8 +10,21 @@ class Player(pygame.sprite.Sprite):
         
         self.direction = pygame.math.Vector2()
         self.speed = 5
+        self.attacking = False
+        self.attack_cooldown = 400
+        self.attack_time = None
         
         self.obstacle_sprites= obstacle_sprites
+        
+    def import_player_assets(self):
+        character_path = '../levelgraphics/graphics/player/'
+        self.animation = {
+            'up':[], 'down':[], 'left':[], 'right':[],
+            'right_idle':[], 'left_idle':[], 'up_idle':[], 'down_idle':[],
+            'right_attack':[], 'left_attack':[], 'up_attack':[], 'down_attack':[]
+        }
+        for animations in self.animation.keys():
+            print(animations)
         
         
     def move(self,speed):
@@ -62,10 +75,28 @@ class Player(pygame.sprite.Sprite):
         else:  
             self.direction.y = 0
         
+        #attack input
+        if keys[pygame.K_SPACE] and not self.attacking:
+            self.attacking = True
+            self.attack_time = pygame.time.get_ticks()
+            print('attack')
+        if keys[pygame.K_LSHIFT] and not self.attacking:
+            self.attacking = True
+            self.attack_time = pygame.time.get_ticks()
+            print('magic')
 
 
+    def cooldowns(self):
+        current_time = pygame.time.get_ticks()
+        
+        if self.attacking:
+            if current_time - self.attack_time >= self.attack_cooldown:
+                self.attacking = False
+             
+    
     def update(self):
         self.input()
+        self.cooldowns()
         self.move(self.speed)
         
     
