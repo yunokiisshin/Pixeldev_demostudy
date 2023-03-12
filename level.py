@@ -5,6 +5,7 @@ from player import Player
 from support import *
 from random import choice
 from weapon import Weapon
+from ui import UI
 
 class Level:
     def __init__(self):
@@ -16,11 +17,16 @@ class Level:
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
         
-        #attack sprites
+        # attack sprites
         self.current_attack = None
         
+        # sprite setup
         self.create_map()
 
+        # user interface setup
+        self.ui = UI()
+        
+        
     def create_map(self):
         
         # imports csv map data and pair it with key names
@@ -74,6 +80,7 @@ class Level:
         #deal with drawing and updating the game
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
+        self.ui.display(self.player)
     
 
 
@@ -101,5 +108,3 @@ class YSortCameraGroup(pygame.sprite.Group):
         for sprite in sorted(self.sprites(), key = lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset   
             self.display_surface.blit(sprite.image,offset_pos)        
-            
-        ###
